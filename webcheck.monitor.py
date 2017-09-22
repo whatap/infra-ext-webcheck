@@ -30,7 +30,7 @@ def printMeta(name, key, value, buf):
 def printWebcheck(buf, response_dic):
     printHistory(response_dic['url'], "webcheck.ping.response_time", response_dic['response_time'], buf)
     printHistory(response_dic['url'], "webcheck.ping.status_code", response_dic['status_code'], buf)
-    printMeta(response_dic['url'], "webcheck.ping.online", response_dic['online'], buf)
+    printHistory(response_dic['url'], "webcheck.ping.online", response_dic['online'], buf)
 
 def listdir(prefix=os.path.split(os.path.realpath(__file__))[0]):
     buf = StringIO()
