@@ -6,8 +6,8 @@ try:
 except ImportError:
     from io import StringIO
 import requests
-import urllib3
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+import requests.packages.urllib3
+requests.packages.urllib3.disable_warnings()
 
 def printHistory(name, key, value, buf):
     buf.write('H ')
