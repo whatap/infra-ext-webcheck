@@ -51,13 +51,13 @@ def listdir(prefix=os.path.split(os.path.realpath(__file__))[0]):
                     }
                     printWebcheck(buf, dic)
                     print("listdir error, line: %s"%line)
-                    pass
-    return buf.getvalue()
+                sys.stdout.write(buf.getvalue())
 
 def request(url):
     result = {}
     start = time.time()
-    r = requests.request('GET', url, allow_redirects=True, verify=False, headers={'User-agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:51.0) Gecko/20100101 Firefox/51.0'})
+    
+    r = requests.request('GET', url, allow_redirects=True, verify=False, headers={'User-agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:51.0) Gecko/20100101 Firefox/51.0'}, timeout=10)
     result['url'] = url
     result['response_time'] = int((time.time() - start) * 1000.0)
     result['status_code'] = r.status_code
@@ -93,4 +93,4 @@ def validationUrl(url):
     return validUrl
     
 if __name__ == '__main__':
-    sys.stdout.write(listdir())
+    listdir()
