@@ -12,7 +12,6 @@ infra-ext-webcheck requires [python](https://python.org/) 2.6+ to run.
 
 ```sh
 $ cd infra-ext-webcheck
-$ sudo pip install -r requirements.txt
 $ sudo chmod +x webcheck.monitoring.py
 $ sudo vi webcheck.config
 ```
