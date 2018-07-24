@@ -5,9 +5,8 @@ try:
     from StringIO import StringIO
 except ImportError:
     from io import StringIO
-import requests
-import requests.packages.urllib3
-requests.packages.urllib3.disable_warnings()
+
+import urllib2
 
 def printHistory(name, key, value, buf):
     buf.write('H ')
@@ -38,11 +37,15 @@ def listdir(prefix=os.path.split(os.path.realpath(__file__))[0]):
         f = open(filepath,'r')
         if f:
             for line in f.read().splitlines():
+                line = line.strip()
+                if not line:
+                    continue
                 url = validationUrl(line)
+
                 try:
                     result = check(url)
                     printWebcheck(buf, result)
-                except:
+                except Exception, e:
                     dic = {
                         'url': url,
                         'response_time': -1,
@@ -50,17 +53,29 @@ def listdir(prefix=os.path.split(os.path.realpath(__file__))[0]):
                         'online': 0
                     }
                     printWebcheck(buf, dic)
-                    print("listdir error, line: %s"%line)
+                    #import traceback
+                    #print url, traceback.format_exc(sys.exc_info())
+                    #print("listdir error, line: %s"%line)
                 sys.stdout.write(buf.getvalue())
 
 def request(url):
     result = {}
     start = time.time()
-    
-    r = requests.request('GET', url, allow_redirects=True, verify=False, headers={'User-agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:51.0) Gecko/20100101 Firefox/51.0'}, timeout=10)
+
+    if url.lower().startswith('https://'):
+        opener = urllib2.build_opener(urllib2.HTTPSHandler())
+    else:
+        opener = urllib2.build_opener(urllib2.HTTPHandler())
+
+    request = urllib2.Request(url, headers={'User-agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:51.0) Gecko/20100101 Firefox/51.0'})
+    request.get_method = lambda: 'GET'
+    try:
+        r = opener.open(request, timeout=10)
+    except urllib2.HTTPError, e:
+        print e
     result['url'] = url
     result['response_time'] = int((time.time() - start) * 1000.0)
-    result['status_code'] = r.status_code
+    result['status_code'] = r.getcode()
     return result
 
 def isDown(r):
